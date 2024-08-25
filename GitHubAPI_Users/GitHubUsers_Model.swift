@@ -6,7 +6,7 @@ struct GitHubUsers_Model: Codable, Identifiable {
 }
 
 struct SearchResult: Codable {
-    let total_count: Int?
-    let incomplete_results: Bool?
-    let items: [GitHubUsers_Model]?
+    let total_count: Int
+    let incomplete_results: Bool
+    let items: [GitHubUsers_Model]
 }

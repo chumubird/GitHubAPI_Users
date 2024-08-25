@@ -8,6 +8,7 @@ class GitHubUsers_ViewModel : ObservableObject {
 
     private var cancellables = Set<AnyCancellable>()
     
+    private var cache: [String: [GitHubUsers_Model]] = [:]
 
 
 
@@ -48,6 +49,13 @@ class GitHubUsers_ViewModel : ObservableObject {
     func searchUser(_ userName: String) {
         guard !userName.isEmpty else { return }
 
+        
+        // 캐시에 데이터가 있는지 확인
+             if let cachedUsers = cache[userName] {
+                 self.users = cachedUsers
+                 return
+             }
+        
         let urlString = "https://api.github.com/search/users?q=\(userName)"
         guard let url = URL(string: urlString) else { return }
 
@@ -61,10 +69,13 @@ class GitHubUsers_ViewModel : ObservableObject {
                 case .finished:
                     print("success")
                 case .failure(let error):
+                    print("또이러내 시벌탱!!!( 핑구 짤)")
                     print("Error: \(error)")
                 }
             }, receiveValue: { result in
-                self.users = result.items ?? []
+                self.users = result.items
+                self.cache[userName] = self.users
+
             })
             .store(in: &cancellables)
 
