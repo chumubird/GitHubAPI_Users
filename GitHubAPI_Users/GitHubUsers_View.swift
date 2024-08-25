@@ -1,11 +1,10 @@
 import SwiftUI
+import Combine
 //start
 struct GitHubUsers_View : View {
     
     @StateObject var viewModel = GitHubUsers_ViewModel()
     @State var inputText : String = ""
-    
-    
     
     var body: some View {
         //        Text("GitHubUsers_API")
@@ -21,40 +20,40 @@ struct GitHubUsers_View : View {
                         .padding()
                         .onChange(of: inputText) { oldValue, newValue in
                             if !newValue.isEmpty {
-                                viewModel.searchUser(newValue)
+                                viewModel.searchQuery = newValue
                             } else {
                                 viewModel.users = []
                             }
                         }
-                        Button(action: {
-                            
-                            print("Search : \(inputText)")
-                            viewModel.searchUser(inputText)
-                            
-                        }, label: {
-                            RoundedRectangle(cornerRadius: 15)
-                                .stroke(Color.black, lineWidth: 3)
-                                .frame(width: 70 ,height: 50)
-                                .overlay {
-                                    Text("Search")
-                                        .font(.system(size: 15))
-                                        .fontWeight(.black)
-                                        .foregroundStyle(.black)
-                                }
-                        })
-                        .disabled( inputText.isEmpty ? true : false)
-                    }
+                    Button(action: {
+                        
+                        print("Search : \(inputText)")
+                        viewModel.searchUser(inputText)
+                        
+                    }, label: {
+                        RoundedRectangle(cornerRadius: 15)
+                            .stroke(Color.black, lineWidth: 3)
+                            .frame(width: 70 ,height: 50)
+                            .overlay {
+                                Text("Search")
+                                    .font(.system(size: 15))
+                                    .fontWeight(.black)
+                                    .foregroundStyle(.black)
+                            }
+                    })
+                    .disabled( inputText.isEmpty ? true : false)
+                }
                 
                 List(viewModel.users) { user in
                     HStack {
-//                        AsyncImage(url: URL(string: user.avatar_url)) { image in
-//                            image.resizable()
-//                                .aspectRatio(contentMode: .fit)
-//                                .frame(width: 50, height: 50)
-//                                .clipShape(Circle())
-//                        } placeholder: {
-//                            ProgressView()
-//                        }
+                        //                        AsyncImage(url: URL(string: user.avatar_url)) { image in
+                        //                            image.resizable()
+                        //                                .aspectRatio(contentMode: .fit)
+                        //                                .frame(width: 50, height: 50)
+                        //                                .clipShape(Circle())
+                        //                        } placeholder: {
+                        //                            ProgressView()
+                        //                        }
                         AsyncImage(url: URL(string: user.avatar_url)) { image in
                             image.resizable()
                                 .aspectRatio(contentMode: .fit)
@@ -79,9 +78,9 @@ struct GitHubUsers_View : View {
             .navigationTitle("Github Users")
             .onAppear(perform: {
                 viewModel.getUsers()
+                
+                
             })
-            
-            
         }
     }
 }

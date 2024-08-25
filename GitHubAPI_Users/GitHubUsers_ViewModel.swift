@@ -10,7 +10,16 @@ class GitHubUsers_ViewModel : ObservableObject {
     
     private var cache: [String: [GitHubUsers_Model]] = [:]
 
-
+    @Published var searchQuery: String = ""
+    init() {
+           $searchQuery
+               .debounce(for: .milliseconds(500), scheduler: RunLoop.main)
+               .removeDuplicates()
+               .sink { [weak self] query in
+                   self?.searchUser(query)
+               }
+               .store(in: &cancellables)
+       }
 
     
     func getUsers() {
