@@ -7,11 +7,14 @@ class GitHubUsers_ViewModel : ObservableObject {
     private var lastUserID: Int?
 
     private var cancellables = Set<AnyCancellable>()
+    
+
+
 
     
     func getUsers() {
         var urlComponents = URLComponents(string: "https://api.github.com/users")!
-        var queryItems = [URLQueryItem(name: "per_page", value: "30")]
+        var queryItems = [URLQueryItem(name: "per_page", value: "5")]
 
         if let lastUserID = lastUserID {
                     queryItems.append(URLQueryItem(name: "since", value: "\(lastUserID)"))
@@ -42,42 +45,29 @@ class GitHubUsers_ViewModel : ObservableObject {
             })
             .store(in: &cancellables)
     }
-    
-    
-    func searchUser (_ userName : String) {
-        guard !userName.isEmpty else {return}
-        
+    func searchUser(_ userName: String) {
+        guard !userName.isEmpty else { return }
+
         let urlString = "https://api.github.com/search/users?q=\(userName)"
-        
-        guard let url = URL(string: urlString) else {return}
-        
+        guard let url = URL(string: urlString) else { return }
+
+    
         URLSession.shared.dataTaskPublisher(for: url)
-            .map {$0.data}
-            .decode(type: SearchResult.self, decoder: JSONDecoder()) // 수정된 부분
+            .map(\.data)
+            .decode(type: SearchResult.self, decoder: JSONDecoder())
             .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: { complition in
-                switch complition {
+            .sink(receiveCompletion: { completion in
+                switch completion {
                 case .finished:
                     print("success")
                 case .failure(let error):
-                    print("error message : \(error)")
+                    print("Error: \(error)")
                 }
-                
             }, receiveValue: { result in
-                self.users = result.items
-                
+                self.users = result.items ?? []
             })
             .store(in: &cancellables)
-        
 
-        
-        
-        
-        
-        
-        
-        
     }
-    
-    
+   
 }

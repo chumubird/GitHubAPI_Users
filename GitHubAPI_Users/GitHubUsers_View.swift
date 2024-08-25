@@ -19,6 +19,13 @@ struct GitHubUsers_View : View {
                         .frame(width: 250 , height: 50)
                         .border(Color.black, width: 3)
                         .padding()
+                        .onChange(of: inputText) { oldValue, newValue in
+                            if !newValue.isEmpty {
+                                viewModel.searchUser(newValue)
+                            } else {
+                                viewModel.users = []
+                            }
+                        }
                         Button(action: {
                             
                             print("Search : \(inputText)")
@@ -40,13 +47,23 @@ struct GitHubUsers_View : View {
                 
                 List(viewModel.users) { user in
                     HStack {
+//                        AsyncImage(url: URL(string: user.avatar_url)) { image in
+//                            image.resizable()
+//                                .aspectRatio(contentMode: .fit)
+//                                .frame(width: 50, height: 50)
+//                                .clipShape(Circle())
+//                        } placeholder: {
+//                            ProgressView()
+//                        }
                         AsyncImage(url: URL(string: user.avatar_url)) { image in
                             image.resizable()
                                 .aspectRatio(contentMode: .fit)
                                 .frame(width: 50, height: 50)
                                 .clipShape(Circle())
                         } placeholder: {
-                            ProgressView()
+                            Color.gray // 기본 이미지
+                                .frame(width: 50, height: 50)
+                                .clipShape(Circle())
                         }
                         VStack(alignment: .leading) {
                             Text(user.login)
