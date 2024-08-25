@@ -13,7 +13,7 @@ struct GitHubAPI_UsersApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            GitHubUsers_View()
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
         }
     }
