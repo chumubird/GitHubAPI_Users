@@ -22,6 +22,7 @@ struct GitHubUsers_View : View {
                         Button(action: {
                             
                             print("Search : \(inputText)")
+                            viewModel.searchUser(inputText)
                             
                         }, label: {
                             RoundedRectangle(cornerRadius: 15)
@@ -59,6 +60,9 @@ struct GitHubUsers_View : View {
                 
             }
             .navigationTitle("Github Users")
+            .onAppear(perform: {
+                viewModel.getUsers()
+            })
             
             
         }
